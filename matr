@@ -1,0 +1,97 @@
+import random
+import numpy as np
+
+
+def print_matr(m):  # Аккуратный вывод матрицы на экран
+    for ind in m:
+        print(ind)
+    print()
+    return
+
+
+def gen_matr(a1, a2, m):   # Генерация матриц по заданным размерам
+    for ind1 in range(0, a1):
+        m0 = []
+        for ind2 in range(0, a2):
+            m0.append(random.randint(1, 9))   # Использование библиотеки random
+        m.append(m0)
+    return (m)
+
+
+def mult(m1, m2, a1, a2, b1, b2):       # Суть в создании двух массивов, с помощью которых дальше идёт расчёт
+    s1 = []
+    s2 = []
+    s = []
+    for ind1 in range(0, a1):  # Строки первой матрицы
+        for ind2 in range(0, a2):  # Столбцы первой матрицы
+            a = m1[ind1][ind2]
+            s1.append(a)
+            s.append(a)
+        for ind3 in range(1, b2):  # Дополнение повторяющимися элементами
+            for ind in range(0, a2):
+                s1.append(s[ind])
+        s.clear()
+    s.clear()
+    for ind2 in range(0, b2):  # Столбцы второй матрицы
+        for ind1 in range(0, b1):  # Строки второй матрицы
+            a = m2[ind1][ind2]
+            s2.append(a)
+            s.append(a)
+    for ind1 in range(1, a1):    # Дополнение повторяющимися элементами
+        for ind in range(len(s)):
+            s2.append(s[ind])
+    s = []
+    n = 0
+    for ind in range(len(s2)):  # Расчёт произведения матриц
+        n = n + s1[ind] * s2[ind]
+        if (ind + 1) % a2 == 0 and ind != 0:   # Поиск перехода на следующий элемент
+            s.append(n)
+            n = 0
+    retutn_matr(s)
+    return
+
+
+def retutn_matr(m):    # Возвращение к двумерному массиву
+    mf = []
+    a = 0
+    for ind1 in range(0, a1):
+        m0 = []
+        for ind2 in range(0, b2):
+            m0.append(m[a])
+            a = a+1
+        mf.append(m0)
+    print_matr(mf)
+    return (m)
+
+
+m1 = []
+m2 = []
+
+print("Введите m строк первой матрицы:")
+a1 = int(input())
+print("Введите n столбцов первой матрицы:")
+a2 = int(input())
+print("Введите m строк второй матрицы:")
+b1 = int(input())
+print("Введите n столбцов второй матрицы:")
+b2 = int(input())
+
+m1 = gen_matr(a1, a2, m1)
+m2 = gen_matr(b1, b2, m2)
+
+print("Матрица 1:")
+print_matr(m1)
+print("Матрица 2:")
+print_matr(m2)
+
+if a2 != b1:
+    print("Матрицы невозможно перемножить")
+    exit()
+
+print("Матрица перемноженная с помощью numpy:")
+print(np.dot(m1, m2))
+
+print("Матрица перемноженная вручную:")
+mult(m1, m2, a1, a2, b1, b2)
+
+
