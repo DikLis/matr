@@ -1,0 +1,28 @@
+import pandas as pd
+
+# Создание переменных, датафрейма, чтение csv и перевод его в строку
+n = int(input("Введите размер окна: "))
+t = int(input("Введите шаг: "))
+data = pd.read_csv('active_power__220610__220718.csv', sep=';', decimal=',')
+data_list = data['ACTIVE_POWER'].tolist()
+df = pd.DataFrame()
+
+# Создание колонок для данных
+for i in range(n):
+    name = "y" + str((i + 1))
+    df[name] = True
+i = 0
+
+# Заполнение датафрейма
+while i + (n - 1) < len(data_list):
+    strok = "df.loc[len(df.index)] = ["
+    for y in range(n):
+        strok += "data_list[" + str(i + y) + "],"
+    strok += "]"
+    exec(strok)
+    i += t
+
+print(data)
+print(df)
+
+df.to_csv('ACTIVE_POWER.csv', index=False)
