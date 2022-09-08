@@ -1,0 +1,65 @@
+import pandas as pd
+
+# Создание переменных, датафрейма, чтение csv и перевод его в строку
+x = int(input("Введите размер x: "))
+y = int(input("Введите размер y: "))
+n = x + y
+t = int(input("Введите шаг: "))
+
+data = pd.read_csv('active_power__220610__220718.csv', sep=';', decimal=',')
+data_list = data['ACTIVE_POWER'].tolist()
+train = pd.DataFrame()
+test = pd.DataFrame()
+
+# Процентовка
+window_count = 1
+while window_count + (n - 1) < len(data_list):
+    window_count += t
+win_test = int(window_count * 0.2)
+start_test = int(window_count * 0.8)
+win_train = int(window_count * 0.8) - (y + 2)
+
+# Создание колонок для данных train и test
+for i in range(x):
+    name = "x" + str((i + 1))
+    train[name] = True
+    test[name] = True
+for i in range(y):
+    name = "y" + str((i + 1))
+    train[name] = True
+    test[name] = True
+i = 0
+print (train, test)
+
+# Заполнение датафрейма train
+while i <= win_train:
+    strok = "train.loc[len(train.index)] = ["
+    for y in range(n):
+        strok += "data_list[" + str(i + y) + "],"
+    strok += "]"
+    exec(strok)
+    i += t
+
+# Заполнение датафрейма test
+while i <= win_train:
+    strok = "train.loc[len(train.index)] = ["
+    for y in range(n):
+        strok += "data_list[" + str(i + y) + "],"
+    strok += "]"
+    exec(strok)
+    i += t
+
+i += t+2
+
+while i + (n - 1) < len(data_list):
+    strok = "test.loc[len(test.index)] = ["
+    for y in range(n):
+        strok += "data_list[" + str(i + y) + "],"
+    strok += "]"
+    exec(strok)
+    i += t
+
+# print(df)
+
+test.to_csv('ACTIVE_POWER_test.csv', index=False)
+train.to_csv('ACTIVE_POWER_train.csv', index=False)
